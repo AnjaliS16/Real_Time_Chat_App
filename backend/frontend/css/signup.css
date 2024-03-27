@@ -1,0 +1,43 @@
+
+.glitter-container {
+    position: relative;
+    animation: glitter-animation 2s ease infinite;
+    color:black;
+}
+
+glitter {
+    font-size: 90px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+@keyframes glitter-animation {
+    0% {
+        filter: hue-rotate(0deg);
+    }
+
+    100% {
+        filter: hue-rotate(360deg);
+    }
+}
+
+@keyframes rotateText {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Apply the rotation animation to the text element */
+  .rotate-text {
+    display: inline-block;
+    animation: rotateText 1s linear; /* Rotate over 1 second */
+  }
+
+  /* Style the button */
+  .rotate-button {
+    font-size: 30px;
+    border: none;
+    color: white;
+    background-color: transparent;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    cursor: pointer; /* Change cursor to pointer on hover */
+  }
+  
