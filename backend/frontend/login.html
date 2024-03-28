@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login page</title>
+    <link rel="stylesheet" href="css/signup.css">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden; /* Hide scrollbars */
+        }
+
+        video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover; /* Ensure the video covers the entire screen */
+            z-index: -1; /* Place the video behind other elements */
+        }
+
+        /* Optional: Add additional styling for your content */
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/5a6a11ca8f.js" crossorigin="anonymous"></script>
+</head>
+<body style="text-align:center">
+    
+
+    <video  autoplay muted loop>
+       
+        <source src="https://ak.picdn.net/shutterstock/videos/1056506843/preview/stock-footage-happy-people-using-smartphone-devices-in-world-wide-connected-social-network-diverse-people-do-e.mp4" type="video/mp4">
+    
+    </video>
+
+    <form onsubmit="handle(event)" id="b"style="text-align: center;margin:90px;background-color:transparent;backdrop-filter: blur(10px);border-radius: 30px;box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);padding:50px;box-sizing: border-box;margin-right:310px;margin-left:310px;">
+<div class="glitter-container">
+        <i style="font-size:90px;color:lightskyblue "class="fa-solid fa-user"></i><br><br>
+    </div>
+        
+    
+       <input id="email" style="font-size:25px;background-color:transparent;color:white;border-right:none;border-left:none;border-top:none;text-align:left;"type="email" placeholder="email"required/><br><br>
+    <input id="password"style="font-size:25px;background-color: transparent;color:white;border-right:none;border-left:none;border-top:none;text-align:left;"type="password" placeholder="password"required/><br><br><br>
+   
+    
+    
+   
+    
+    <button   style="font-size:30px;border:none;color:white; background-color: transparent;font-family:Georgia, 'Times New Roman', Times, serif"type="submit" class="rotate-button" onclick="rotateText()"><span id="loginText">LOGIN</span></button><br><br>
+    <a  style="font-size:20px;" href="forgot-password.html" >Forgot-password?</a>
+
+</form>
+
+<script>
+    function rotateText() {
+      var loginText = document.getElementById('loginText');
+      loginText.classList.add('rotate-text');
+      setTimeout(function() {
+      loginText.classList.remove('rotate-text');
+    }, 1000);
+    }
+  </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.1/axios.min.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>

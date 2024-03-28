@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/script.css">
+    <title>chat App</title>
+    <script src="https://kit.fontawesome.com/5a6a11ca8f.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" integrity="sha384-dpuaG1suU0eT09tx5plTaGMLBsfDLzUCCUXOY2j/LSvXYuG6Bqs43ALlhIqAJVRb" crossorigin="anonymous">
+   
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.css">
+    <style>
+        #message,
+    #picker {
+        margin: -9px;
+        
+        font-size: 14px; /* Optional, ensures no space due to font size */
+    }
+    </style>
+
+
+</head>
+
+
+
+
+<body class="overlay" style="text-align:center;background: url('https://i.pinimg.com/736x/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg') no-repeat center center fixed;background-position:right;background-size:  1010px;">
+    <!-- <h2>Chat App</h2> -->
+    
+    <div class="display">
+        <div class="groups">
+            <div id="create"class="create-group">
+                <h3 > &#x1F440; </h3>
+                <label id="dark"class="switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider round"></span>
+                </label><br>
+                <button class="btn btn-#F8F8FF btn-mg"style="font-weight:bold;color:white;border-right:none;background-color:lightslategray" id="create-grp">Create Group</button>
+                <button class="btn btn-#F8F8FF btn-mg" style="font-weight:bold;border-left:none;color:white;background-color: lightslategray;"id="delete-grp">Left Group</button>
+            <hr>
+            
+                <div class="new-group hide">
+                    <form id="create-new-group">
+                        <label for="name">Create a new group: </label>
+                        <input type="text" name="name" id="name" required>
+                        <button type="submit">New Group</button>
+                    </form>
+                </div>
+            </div>
+            <div  class="show-groups">
+                
+                
+            </div>
+            <div id="show-users"class="show-add-users hide">
+                <div>
+                    <label for="1">first</label>
+                    <input type="checkbox" id="1">
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="group-message">
+            <div  class="hide header">
+                <i style="font-size: 40px;" class="fa-solid fa-users-rectangle"></i>
+                &nbsp;&nbsp;&nbsp;
+                <h2> Chat App</h2>
+                
+
+            </div>
+            <div id="notification"></div>
+            <div class="hide messages">
+                
+
+            </div>
+
+            
+            <div class="hide send-messages"id="message-container"style="background-color: lightslategray;">
+                <label class="switch">
+                    
+                    <input type="checkbox" id="toggleInput">
+                    <span class="slider round" id="round"></span>
+                    
+                  </label>
+                  
+                
+                   
+                  
+                   <form id="messages" onsubmit="handle(event)">
+                    <input type="text" name="message" id="message" placeholder="Type your message here"   required oninvalid="this.setCustomValidity('Enter message')" oninput="setCustomValidity('')">
+                    <input  contenteditable="true" id="picker" name="picker">
+                    <button style="font-weight: bold;"type="submit" id="send">send</button>
+                    
+                   </form>
+
+
+            
+                
+                
+                <form id="files" class="hide" enctype="multipart/form-data">
+                    <input type="file" name="file" id="file" required>
+                    <button style="font-weight: bold;"type="submit">send</button>
+                </form>
+            </div>
+            
+            <div class="users hide">
+                <button id="add-user-toggle-btn" class="hide">Add Users</button>
+                <div class="hide add-users">
+                    <label for="search">Enter email or name</label>
+                    <input type="text" name="search" id="search" placeholder="Enter email or name">
+                    <div class="display-users">
+
+                    </div>
+                </div>
+                <div class="hide show-users">
+
+                </div>
+            </div>
+        </div>
+    </div>
+   
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js" ></script>
+ 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.js"></script>
+    <script>
+    
+    
+    
+    $(document).ready(function () {
+    // Initialize Emoji Picker
+    var emojiPicker = $('#picker').emojioneArea({
+        pickerPosition: 'top',
+        standalone: true,
+    });
+
+    emojiPicker[0].emojioneArea.on('emojibtn.click', function (button, event) {
+        var emoji = emojiPicker[0].emojioneArea.getText();
+        console.log(emoji, '<<<<<<<<emoji');
+        $('#message').val($('#message').val() + emoji);
+    });
+});
+</script>
+
+</body>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.1/axios.min.js"></script>
+
+<script src="js/script.js"></script>
+
+</html>
