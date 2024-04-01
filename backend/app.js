@@ -47,7 +47,9 @@ const User = require('./model/user.js')
 const Group = require('./model/group.js')
 const Member = require('./model/member.js')
 const Forgotpassword = require('./model/forgotpassword.js')
+//const cronJob=require('./util/cron')
 
+//cronJob.start();
 
 
 const user = require('./routes/user.js');

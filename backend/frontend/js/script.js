@@ -143,7 +143,15 @@ socket.on("message", (data)=>{
     let message = data.message;
     let users = data.users;
     console.log(message,users)
+    console.log(message.type)
+    if(message.type == 'text'){
+
     showMessage(message,users)
+    }
+
+    else{
+        showFiles(message,users)
+    }
 }
 );
 
@@ -170,7 +178,7 @@ async function handle(event) {
             }
         });
 
-           console.log(res.data,'from messages function')
+           console.log(res.data.type,'from messages function')
        
 
         var message=res.data;
@@ -658,7 +666,18 @@ document.getElementById('files').addEventListener('submit', async (e) => {
                 'auth-token': localStorage.getItem('token')
             }
         })
-        console.log(res)
+        console.log(res.data,'from show files')
+
+        let final_users = JSON.parse(localStorage.getItem(`user-${curr_group.id}`)) || []
+      
+       
+
+        var message=res.data;
+
+        
+            socket.emit('user-message', { message: message, users: final_users });
+          
+
         const div = document.createElement('div')
         div.className = 'u-message u-multi'
         div.textContent = "You: "
