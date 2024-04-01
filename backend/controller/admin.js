@@ -110,7 +110,10 @@ exports.showUser = async (req, res) => {
                     exclude: ['password']
                 }
             })
+
+         
             return res.json(result)
+
         } else {
             return res.json({ msg: "You don't have the required permissions" })
         }

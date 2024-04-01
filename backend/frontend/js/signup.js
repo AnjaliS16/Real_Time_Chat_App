@@ -13,7 +13,7 @@ function handle(event) {
     };
 
 
-    axios.post("http://54.159.189.58:3005/add-details", obj)
+    axios.post("http://localhost:3006/add-details", obj)
         .then((response) => {
             // console.log(response.data)
             if (response.data.Error) {
@@ -54,7 +54,7 @@ function handle(event) {
 
 window.addEventListener("DOMContentLoaded", async () => {
     try {
-        const response = await axios.get("http://54.159.189.58:3005/get-details")
+        const response = await axios.get("http://localhost:3006/get-details")
         console.log('got our data')
 
 

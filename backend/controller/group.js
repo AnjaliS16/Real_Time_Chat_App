@@ -108,33 +108,3 @@ exports.getOtherUsers = async (req, res) => {
         return res.status(500).json({ msg: "Internal server error" })
     }
 }
-
-exports.deleteGroups = async (req, res) => {
-
-    const groupId = req.params.groupId;
-    const userId = req.user.id;
-
-
-    try {
-        const user = await User.findOne({ where: { id: userId } });
-        const groups = await Group.findOne({ where: { id: groupId } });
-
-        const group = await Member.findOne({ where: { groupId: groupId, userId: userId } });
-        console.log(group, 'group>>>>>>>>>>>>>>>>>>>>>>>')
-
-        if (!group) {
-            return res.status(404).json({ error: 'Group not found or does not belong to the current user' });
-        }
-
-
-
-        await group.update({ groupId: null });
-
-        const namee = user.name;
-        return res.status(200).json({ namee, groups, group, message: 'Group deleted successfully' });
-    } catch (error) {
-        console.error('Error deleting group:', error);
-        return res.status(500).json({ error: 'Internal server error' });
-    }
-
-}

@@ -1,3 +1,4 @@
+const socket= io();
 const messages = document.querySelector('.messages')
 let rendered = false
 const groups = document.querySelector('.show-groups')
@@ -16,7 +17,7 @@ async function renderElemets() {
         const id = urlParams.get('id');
         if (id) {
             console.log("id present")
-            const group = await axios.get(`http://54.159.189.58:3005/group/join-group/${id}`, {
+            const group = await axios.get(`http://localhost:3006/group/join-group/${id}`, {
                 headers: {
                     'auth-token': localStorage.getItem('token')
                 }
@@ -25,7 +26,7 @@ async function renderElemets() {
             showGroups(group.data.group)
 
         }
-        const res = await axios.get('http://54.159.189.58:3005/group/get-groups', {
+        const res = await axios.get('http://localhost:3006/group/get-groups', {
             headers: {
                 'auth-token': localStorage.getItem('token')
             }
@@ -50,125 +51,6 @@ function scrollToBottom() {
     const element = document.querySelector('.messages')
     element.scrollTop = element.scrollHeight
 }
-
-document.getElementById('delete-grp').addEventListener('click', showDeleteGroupCheckbox);
-
-
-
-function showDeleteGroupCheckbox() {
-
-
-    const dep = document.getElementById('delete-grp').textContent;
-
-    console.log(dep, 'dep><<<')
-
-    if (dep === 'Back') {
-        const checkboxes = document.querySelectorAll('.group-checkbox');
-        checkboxes.forEach(checkbox => {
-            checkbox.style.display = 'none';
-        });
-        const deleteSelectedBtn = document.getElementById('delete-selected-btn');
-        deleteSelectedBtn.style.display = 'none';
-        document.getElementById('delete-grp').textContent = 'Left Group';
-    }
-    else {
-
-        const groupsContainer = document.querySelector('.show-groups');
-        const groups = Array.from(groupsContainer.querySelectorAll('.group-items'));
-
-
-
-        groups.forEach(groupItem => {
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = 'group-checkbox';
-            checkbox.dataset.id = groupItem.id;
-
-            groupItem.prepend(checkbox);
-        });
-
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete Selected Groups';
-        deleteButton.id = 'delete-selected-btn';
-        deleteButton.addEventListener('click', deleteSelectedGroups);
-
-
-        groupsContainer.appendChild(deleteButton);
-
-    }
-}
-
-async function deleteSelectedGroups() {
-
-
-    const groupsContainer = document.querySelector('.show-groups');
-    const checkboxes = groupsContainer.querySelectorAll('.group-checkbox:checked');
-    const removedDataArray = [];
-    try {
-
-
-        await Promise.all(Array.from(checkboxes).map(async checkbox => {
-            const groupId = checkbox.dataset.id;
-            console.log(groupId, '>>><,,,,,,,,,,,,')
-
-            const res = await axios.delete(`http://54.159.189.58:3005/group/delete/${groupId}`, {
-                headers: {
-                    'auth-token': localStorage.getItem('token')
-                }
-            });
-
-
-            localStorage.setItem('deleted', true);
-
-            console.log(res.data, '<<<<>>>>>')
-
-            const existingIndex = removedDataArray.findIndex(entry => entry.group.userId === res.data.group.userId);
-        if (existingIndex === -1) { 
-            removedDataArray.push(res.data);
-            console.log('Removed data array:', removedDataArray);
-        } else { 
-            removedDataArray[existingIndex] = res.data;
-            console.log('Removed data array:', removedDataArray);
-        }
-
-            const groupItem = checkbox.closest('.group-items');
-            groupItem.remove();
-
-
-            const group = curr_group
-            let final_users = JSON.parse(localStorage.getItem(`user-${group.id}`)) || []
-            
-
-            final_users = final_users.filter(user => user.member.groupId !== groupId);
-           // final_users = final_users.slice(0, -2);
-     console.log(final_users,'>>>>final_users')
-            localStorage.setItem(`user-${group.id}`, JSON.stringify(final_users))
-
-
-
-        }))
-
-        localStorage.setItem('removedDataArray', JSON.stringify(removedDataArray));
-
-        document.querySelector('#delete-grp').textContent = 'Back'
-        return removedDataArray;
-    } catch (error) {
-        console.error('Error deleting groups:', error);
-        return [];
-    }
-}
-
-
-function retrieveRemovedDataArray() {
-    const storedData = localStorage.getItem('removedDataArray');
-    return storedData ? JSON.parse(storedData) : [];
-}
-
-
-window.addEventListener('load', () => {
-    const removedDataArray = retrieveRemovedDataArray();
-    console.log(removedDataArray);
-});
 
 async function showGroups(group) {
     const div = document.createElement('div')
@@ -207,7 +89,7 @@ async function showGroups(group) {
         await showGroupMessages()
         
 
-       // setInterval(showGroupMessages, 5000);
+        //setInterval(showMessages, 1000);
 
         
 
@@ -257,57 +139,46 @@ function showMessage(data, users) {
 }
 
 
-async function defaultMessage(group, user) {
-    console.log(group, user.groups.id, user, 'from default')
-    var find = group.member.groupId;
-    var findgroup = user.groups.id;
-
-    var notification = document.getElementById('notification');
-    console.log(find, 'from default message')
-    console.log(findgroup, 'from defutmessage')
-
-
-    if (find === findgroup) {
-
-
-        var notification = document.getElementById('notification');
-        notification.innerHTML = user.namee + ' has left the group.';
-        notification.style.display = 'block';
-        console.log(notification);
-
-       
-
-        setTimeout(function () {
-            notification.style.display = 'none';
-            
-
-        }, 5000);
-
-
-    }
-
+socket.on("message", (data)=>{
+    let message = data.message;
+    let users = data.users;
+    console.log(message,users)
+    showMessage(message,users)
 }
-
+);
 
 
 async function handle(event) {
-
+    
     event.preventDefault();
     const groupId = curr_group.id;
-
+  
     try {
         const data = {
             message: event.target.message.value,
             groupId,
 
         };
+        let final_users = JSON.parse(localStorage.getItem(`user-${curr_group.id}`)) || []
+        let final_messages = JSON.parse(localStorage.getItem(`message-${curr_group.id}`)) || []
+      
+      
 
-        const res = await axios.post('http://54.159.189.58:3005/message/add-message', data, {
+        const res = await axios.post('http://localhost:3006/message/add-message', data, {
             headers: {
                 'auth-token': localStorage.getItem('token')
             }
         });
 
+           console.log(res.data,'from messages function')
+       
+
+        var message=res.data;
+
+        
+            socket.emit('user-message', { message: message, users: final_users });
+          
+    
         console.log(res);
         var div = document.createElement('div');
         div.className = 'u-message';
@@ -315,6 +186,8 @@ async function handle(event) {
         messages.appendChild(div);
         event.target.message.value = ''
         scrollToBottom();
+
+
     } catch (e) {
         console.log(e);
     }
@@ -334,7 +207,7 @@ async function createNewGroup(e) {
                 selectedUsers.push(user.id)
             }
         })
-        const group = await axios.post('http://54.159.189.58:3005/group/create', { "name": e.target.name.value, selectedUsers }, {
+        const group = await axios.post('http://localhost:3006/group/create', { "name": e.target.name.value, selectedUsers }, {
             headers: {
                 'auth-token': localStorage.getItem('token')
             }
@@ -360,7 +233,7 @@ async function createNewGroup(e) {
 document.getElementById('create-grp').addEventListener('click', async () => {
     if (document.querySelector('.new-group').classList.contains('hide')) {
         document.querySelector('.new-group').classList.remove('hide')
-        const res = await axios.get('http://54.159.189.58:3005/group/other-users', {
+        const res = await axios.get('http://localhost:3006/group/other-users', {
             headers: {
                 'auth-token': localStorage.getItem('token')
             }
@@ -408,18 +281,19 @@ async function showGroupMessages() {
 
         let final_messages = JSON.parse(localStorage.getItem(`message-${group.id}`)) || []
         let final_users = JSON.parse(localStorage.getItem(`user-${group.id}`)) || []
+        console.log(final_users,'>>>>>><<<<<<')
         let mId = 0
         let uId = 0
         if (final_messages.length > 0)
             mId = final_messages[final_messages.length - 1].id
         if (final_users.length > 0)
             uId = final_users[final_users.length - 1].id
-        const res = await axios.get(`http://54.159.189.58:3005/message/get-messages/${group.id}/?messageId=${mId}`, {
+        const res = await axios.get(`http://localhost:3006/message/get-messages/${group.id}/?messageId=${mId}`, {
             headers: {
                 'auth-token': localStorage.getItem('token')
             }
         })
-        const res2 = await axios.get(`http://54.159.189.58:3005/group/all-users/${group.id}/?id=${uId}`, {
+        const res2 = await axios.get(`http://localhost:3006/group/all-users/${group.id}/?id=${uId}`, {
             headers: {
                 'auth-token': localStorage.getItem('token')
             }
@@ -436,6 +310,7 @@ async function showGroupMessages() {
             if (message.type == 'text') {
                 console.log(message, '>><<<<<')
                 showMessage(message, final_users)
+               // socket.emit('user-message', { message: message, final_users: final_users });
                
 
             }
@@ -454,51 +329,20 @@ async function showGroupMessages() {
 
         console.log(final_users.length, 'this is final user length')
 
-        var removedDataArray = await retrieveRemovedDataArray();
-        console.log(removedDataArray, '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>from removeed datA');
 
         
        
 
-        
-       //var final= localStorage.getItem(`user-${group.id}`, JSON.stringify(final_users))
-      // console.log(final,'>>>>>>>>>>>>>>>>>>>>>>>>>');
-      const filteredUsers = final_users
-      .filter(user => user.member.groupId === groupToCheck.id) 
-      .filter((user, index, self) => { 
-          return index === self.findIndex(u => (
-              u.id === user.id
-          ));
-      });
-console.log(filteredUsers,'>>>>>>>>>>>>filteredUsers')
 
-
-
-
-        filteredUsers.forEach(user => {
-
-           
-
-
-            if ( removedDataArray.length > 0) {
-                removedDataArray.forEach(removeData => {
-                    defaultMessage(user, removeData);
-                });
-
-                
-
-            }
-           //console.log(final_user, '>>>>><<<<<<');
-          //  showUser(user);
-
-        });
+         final_users
+         .filter((user, index, self) => index === self.findIndex(u => u.id === user.id))
+         .forEach(user => {
+             console.log(user.member.groupId, '>>><<<<<<');
+             showUser(user);
+             //console.log(user,'from show')
+         });
 
        
-
-        filteredUsers.forEach(user => { 
-            console.log( user.member.groupId,'>>><<<<<<');
-            showUser(user);
-        })        
 
 
         final_messages = final_messages.slice(-10);
@@ -508,19 +352,26 @@ console.log(filteredUsers,'>>>>>>>>>>>>filteredUsers')
 
         localStorage.setItem(`user-${group.id}`, JSON.stringify(final_users))
 
-        const res3 = await axios.post(`http://54.159.189.58:3005/admin/show-users/${group.id}`, null, {
+        const res3 = await axios.post(`http://localhost:3006/admin/show-users/${group.id}`, null, {
             headers: {
                 'auth-token': localStorage.getItem('token')
             }
         })
         console.log(res3)
         displayUsers.innerHTML = ``
-        res3.data.forEach(user => {
-            addUser(user)
 
 
+
+        
+       res3.data.forEach(user => {
+       
+        console.log(res3.data.length,'from response length')
+           
+             addUser(user)
+        
         })
 
+     
 
     } catch (e) {
         console.log(e)
@@ -599,12 +450,14 @@ function showUser(user) {
             removeAdmin.classList.add('hide')
         let final_users = JSON.parse(localStorage.getItem(`user-${curr_group.id}`)) || []
         makeAdmin.onclick = async () => {
+           
             try {
-                const res = await axios.post(`http://54.159.189.58:3005/admin/make-admin/${curr_group.id}`, { "userId": user.id }, {
+                const res = await axios.post(`http://localhost:3006/admin/make-admin/${curr_group.id}`, { "userId": user.id }, {
                     headers: {
                         'auth-token': localStorage.getItem('token')
                     }
                 })
+               
                 final_users = final_users.map(elem => {
                     console.log(elem)
 
@@ -624,7 +477,7 @@ function showUser(user) {
 
         removeAdmin.onclick = async () => {
             try {
-                const res = await axios.post(`http://54.159.189.58:3005/admin/remove-admin/${curr_group.id}`, { "userId": user.id }, {
+                const res = await axios.post(`http://localhost:3006/admin/remove-admin/${curr_group.id}`, { "userId": user.id }, {
                     headers: {
                         'auth-token': localStorage.getItem('token')
                     }
@@ -650,7 +503,7 @@ function showUser(user) {
 
         removeUser.onclick = async () => {
             try {
-                const res = await axios.post(`http://54.159.189.58:3005/admin/remove-member/${curr_group.id}`, { "userId": user.id }, {
+                const res = await axios.post(`http://localhost:3006/admin/remove-member/${curr_group.id}`, { "userId": user.id }, {
                     headers: {
                         'auth-token': localStorage.getItem('token')
                     }
@@ -718,6 +571,13 @@ document.getElementById('add-user-toggle-btn').addEventListener('click', () => {
     }
 })
 
+
+
+
+
+
+
+
 function addUser(user) {
     console.log(user)
     const div = document.createElement('div')
@@ -732,7 +592,7 @@ function addUser(user) {
         try {
             console.log(curr_group)
 
-            const res = await axios.post(`http://54.159.189.58:3005/admin/add-user/${curr_group.id}`, {
+            const res = await axios.post(`http://localhost:3006/admin/add-user/${curr_group.id}`, {
                 id: user.id
             }, {
                 headers: {
@@ -740,23 +600,10 @@ function addUser(user) {
                 }
             })
             console.log(res)
-            displayUsers.removeChild(div)
-
-            const show_user = res.data.user
-            
-            
-            show_user.member = res.data.user[0]
-            console.log(res.data.user, 'from adduser')
+                
            
-            showUser(show_user)
-            
-          
-
-             var removedDataArray = await  retrieveRemovedDataArray();
-             removedDataArray = [];
-             localStorage.setItem('removedDataArray', JSON.stringify(removedDataArray));
-
-             localStorage.setItem('removed')
+            displayUsers.removeChild(div)
+            showUser(user)
 
              
 
@@ -766,10 +613,12 @@ function addUser(user) {
     }
 
 
+
     div.appendChild(btn)
 
-    displayUsers.appendChild(div)
+    displayUsers.appendChild(div);
 }
+
 
 document.getElementById('search').addEventListener('keyup', (e) => {
     const text = e.target.value
@@ -780,6 +629,8 @@ document.getElementById('search').addEventListener('keyup', (e) => {
             user.classList.remove('hide')
     })
 })
+
+
 
 document.getElementById('toggleInput').addEventListener('click', (event) => {
     console.log(event.target.checked)
@@ -802,7 +653,7 @@ document.getElementById('files').addEventListener('submit', async (e) => {
 
         const formData = new FormData(document.getElementById('files'))
 
-        const res = await axios.post(`http://54.159.189.58:3005/message/upload-file/${group.id}`, formData, {
+        const res = await axios.post(`http://localhost:3006/message/upload-file/${group.id}`, formData, {
             headers: {
                 'auth-token': localStorage.getItem('token')
             }

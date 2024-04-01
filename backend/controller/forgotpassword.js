@@ -47,7 +47,7 @@ const forgotpassword = async (req, res) => {
             ],
             subject: 'Test email',
             textContent: 'This is a test email sent via the Sendinblue Beta API.',
-            htmlContent: `<a href="http://54.159.189.58:3005/resetpassword.html?reset=${id}">click here</a>`,
+            htmlContent: `<a href="http://localhost:3006/resetpassword.html?reset=${id}">click here</a>`,
         };
 
         apiInstance

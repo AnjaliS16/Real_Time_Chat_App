@@ -10,7 +10,7 @@ router.get('/group/get-groups', auth, groupController.getGroups)
 router.get('/group/join-group/:groupId', auth, groupController.joinGroup)
 router.get('/group/all-users/:groupId', auth, groupController.getUsers)
 router.get('/group/other-users', auth, groupController.getOtherUsers)
-router.delete('/group/delete/:groupId', auth, groupController.deleteGroups)
+
 
 
 module.exports = router;

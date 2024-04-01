@@ -18,4 +18,23 @@ const authenticate = async (req, res, next) => {
     }
 }
 
-module.exports = authenticate;
+const socketAuthenticate = async(socket, next) => {
+    console.log('demo')
+    const token = socket.handshake.auth.token
+
+
+    console.log(token,'token from soket.io>>>>>>>>>>>>>>>>>>.');
+    
+    if(token){
+
+ 
+    const data = jwt.verify(token,  process.env.JWTSECRETKEY)
+    const user = await User.findByPk(data.userId)
+    socket.user = user
+    next()
+    }else{
+        next(new Error("token not found"))
+    }
+}
+
+module.exports = authenticate,socketAuthenticate;

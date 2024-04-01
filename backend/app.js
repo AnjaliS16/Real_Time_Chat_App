@@ -3,9 +3,22 @@ const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
+const http = require('http');
 const compression = require('compression');
 const morgan = require('morgan');
 const fs = require('fs');
+const { Server } = require('socket.io');
+
+const server = http.createServer(app);
+const io = new Server(server);
+
+io.on("connection", (socket) => {
+    socket.on('user-message', (message, final_users) => {
+
+        socket.broadcast.emit("message", message, final_users)
+        console.log('A new user has added', message, final_users)
+    })
+})
 
 require('dotenv').config()
 
@@ -17,11 +30,13 @@ const accessLogStream = fs.createWriteStream(
 );
 
 
+
+
 app.use(compression());
 app.use(morgan('combined', { stream: accessLogStream }))
 app.use(cors({
-    origin : 'http://54.159.189.58:3005',
-    methods : [' GET' ,'POST','DELETE']
+    origin: 'http://localhost:3006',
+    methods: [' GET', 'POST']
 }))
 
 app.use(express.static(path.join(__dirname, 'frontend')));
@@ -42,11 +57,14 @@ const admin = require('./routes/admin.js')
 const forgotpassword = require('./routes/forgotpassword.js')
 
 
+
+
 app.use(user);
 app.use(message);
 app.use(group);
 app.use(admin);
 app.use(forgotpassword);
+
 
 
 app.use((req, res, next) => {
@@ -78,7 +96,7 @@ Forgotpassword.belongsTo(User);
 
 sequelize.sync()
     .then(() => {
-        app.listen(5500, () => {
+        server.listen(3006, () => {
             console.log('server running on port 6900')
         });
     })

@@ -11,7 +11,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         alert("wrong link")
         location.href = 'forgot-password.html'
     }
-    const res = await axios.get(`http://54.159.189.58:3005/check-password-link/${resetId}`)
+    const res = await axios.get(`http://localhost:3006/check-password-link/${resetId}`)
     if (!res.data.isActive) {
         alert("link expired get a new one")
         location.href = 'forgot-password.html'
@@ -38,7 +38,7 @@ async function handleSubmit(event) {
             alert('new and confirm password are different')
         else {
 
-            const res = await axios.post(`http://54.159.189.58:3005/resetpassword/${resetId}`, { newPassword, confirmPassword })
+            const res = await axios.post(`http://localhost:3006/resetpassword/${resetId}`, { newPassword, confirmPassword })
             // console.log(res)
 
             alert('password changed successfully!')
