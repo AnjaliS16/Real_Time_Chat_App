@@ -25,15 +25,15 @@ require('dotenv').config()
 app.use(bodyParser.json());
 
 
-const accessLogStream = fs.createWriteStream(
-    path.join(__dirname, 'access.log'), { flags: 'a' }
-);
+// const accessLogStream = fs.createWriteStream(
+//     path.join(__dirname, 'access.log'), { flags: 'a' }
+// );
 
 
 
 
-app.use(compression());
-app.use(morgan('combined', { stream: accessLogStream }))
+// app.use(compression());
+// app.use(morgan('combined', { stream: accessLogStream }))
 app.use(cors({
     origin: 'http://localhost:3006',
     methods: [' GET', 'POST']
