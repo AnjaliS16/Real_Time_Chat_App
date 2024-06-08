@@ -91,6 +91,8 @@ async function changeAdmin(value, req, res) {
     }
 }
 
+
+
 exports.showUser = async (req, res) => {
     try {
         const groups = await req.user.getGroups({ where: { id: req.params.groupId } })
@@ -124,6 +126,8 @@ exports.showUser = async (req, res) => {
         return res.status(500).json({ success: false, msg: "Internal server error" })
     }
 }
+
+
 
 exports.addUser = async (req, res) => {
     try {

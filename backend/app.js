@@ -39,7 +39,7 @@ app.use(cors({
     methods: [' GET', 'POST']
 }))
 
-app.use(express.static(path.join(__dirname, 'frontend')));
+//app.use(express.static(path.join(__dirname, 'frontend')));
 
 const sequelize = require('./util/database');
 const Message = require('./model/message.js')

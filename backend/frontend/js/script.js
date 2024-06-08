@@ -437,9 +437,10 @@ function showUser(user) {
 
     div.className = 'curr_user'
 
+    
 
     if (user.member.admin) {
-        const span = document.createElement('span')
+        const span = document.createElement('span');
         div.className = 'curr_user admin'
         span.textContent = 'admin'
         div.appendChild(span)
@@ -458,7 +459,10 @@ function showUser(user) {
             removeAdmin.classList.add('hide')
         let final_users = JSON.parse(localStorage.getItem(`user-${curr_group.id}`)) || []
         makeAdmin.onclick = async () => {
-           
+             
+
+
+      
             try {
                 const res = await axios.post(`http://localhost:3006/admin/make-admin/${curr_group.id}`, { "userId": user.id }, {
                     headers: {
@@ -476,6 +480,8 @@ function showUser(user) {
                 })
                 localStorage.setItem(`user-${curr_group.id}`, JSON.stringify(final_users))
                 console.log(res)
+                window.location.reload();
+                
             } catch (e) {
                 console.log(e)
             }
@@ -500,6 +506,7 @@ function showUser(user) {
                     return elem
                 })
                 localStorage.setItem(`user-${curr_group.id}`, JSON.stringify(final_users))
+                window.location.reload();
             } catch (e) {
                 console.log(e)
             }

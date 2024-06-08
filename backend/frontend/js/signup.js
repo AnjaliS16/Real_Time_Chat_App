@@ -16,11 +16,11 @@ function handle(event) {
     axios.post("http://localhost:3006/add-details", obj)
         .then((response) => {
             // console.log(response.data)
-            if (response.data.Error) {
-                console.log('already have bro>>>>>>')
-                alert('User already exists,Please Login!!');
-            }
-            else {
+           // if (response.data.Error) {
+             //   console.log('already have bro>>>>>>')
+             //   alert('User already exists,Please Login!!');
+           // }
+            //else {
                 console.log('posted data')
 
                 // showUserOnScreen(response.data.newuser)
@@ -34,7 +34,7 @@ function handle(event) {
                 document.getElementById('password').value = '';
 
                 window.location.href = "login.html"
-            }
+            //}
 
         })
         .catch((err) => {

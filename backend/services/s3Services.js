@@ -21,7 +21,7 @@ function uploadToS3(data , fileName){
     s3Bucket.upload(params, function(err, data) {
         if(err)
             reject("error")
-
+           console.log(err);
         
          resolve(data)
       });
